@@ -1,11 +1,12 @@
 #include "ladder.h"
+#include <unordered_set>
 
 void error(string word1, string word2, string msg) {
     cout << word1 << word2 << msg;
 }
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
-    if (str1 == str2) return false;
+    if (str1 == str2) return true;
 
     int len1 = str1.size();
     int len2 = str2.size();
@@ -19,16 +20,8 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
                 if (differences > d) return false;
             }
         }
-        return (differences == d);
+        return (differences <= d);
     } else {
-        // for (size_t i = 0; i < longer.size(); ++i) {
-        //     if (i - differences == shorter.size() - 1) {
-        //         differences += longer.size() - 1 - i;
-        //     }
-        //     if (longer[i] != shorter[i - differences]) ++differences;
-        //     if (differences > d) return false;
-        // }
-        // return (differences == d);
         const string& shorter = (len1 > len2) ? str2 : str1;
         const string& longer = (len1 > len2) ? str1 : str2;
         int differences = 0;
@@ -42,7 +35,7 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
                 j++;
             }
         }
-        return ((differences + static_cast<int>(longer.size() - i)) == d);
+        return ((differences + static_cast<int>(longer.size() - i)) <= d);
     }
 }
 
@@ -57,7 +50,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     queue<vector<string>> Q;
 
     // label root as explored
-    set<string> explored;
+    unordered_set<string> explored;
     explored.insert(begin_word);
 
     // Q.enqueue(root)
